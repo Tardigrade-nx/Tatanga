@@ -1,0 +1,22 @@
+OBJS = $(wildcard src/*.cpp)
+CC = g++
+INCLUDE_PATHS = -IC:\mingw_dev_lib\SDL2-2.0.9\i686-w64-mingw32\include \
+                -IC:\mingw_dev_lib\SDL2-2.0.9\i686-w64-mingw32\include\SDL2 \
+                -IC:\mingw_dev_lib\SDL2_image-2.0.3\i686-w64-mingw32\include
+LIBRARY_PATHS = -LC:\mingw_dev_lib\SDL2-2.0.9\i686-w64-mingw32\lib \
+                -LC:\mingw_dev_lib\SDL2_image-2.0.3\i686-w64-mingw32\lib
+# Add '-Wl,-subsystem,windows' to COMPILER_FLAGS to get rid of the console window
+COMPILER_FLAGS = -Wall -pedantic
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+OBJ_NAME = Tatanga
+
+all : $(OBJS)
+	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+	cp c:\MinGW\bin\libstdc++-6.dll .
+	cp c:\mingw_dev_lib\SDL2-2.0.9\i686-w64-mingw32\bin\SDL2.dll .
+	cp c:\mingw_dev_lib\SDL2_image-2.0.3\i686-w64-mingw32\bin\libpng16-16.dll .
+	cp c:\mingw_dev_lib\SDL2_image-2.0.3\i686-w64-mingw32\bin\zlib1.dll .
+	cp c:\mingw_dev_lib\SDL2_image-2.0.3\i686-w64-mingw32\bin\SDL2_image.dll .
+
+clean :
+	rm -f $(OBJ_NAME) SDL2.dll libstdc++-6.dll libpng16-16.dll SDL2_image.dll zlib1.dll
