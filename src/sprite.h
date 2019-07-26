@@ -3,10 +3,6 @@
 
 #include "def.h"
 
-#define RUN_SPEED_MAX      5.0
-#define RUN_ACCELERATION   0.1
-#define RUN_DECELERATION   0.1
-
 //------------------------------------------------------------------------------
 
 class Sprite
@@ -25,9 +21,6 @@ class Sprite
 
    // Render sprite
    void Render();
-
-   // Start animation
-   void StartAnim(int p_animId, int p_nbSteps, int p_speed);
 
    // Set x and y coordinates
    void SetPosition(const double &p_x, const double &p_y);
@@ -78,6 +71,9 @@ class Sprite
 //------------------------------------------------------------------------------
 
    private:
+
+   // Start animation
+   void StartAnim(int p_animId, int p_nbSteps, int p_speed);
 
    // Forbidden
    Sprite();

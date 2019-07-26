@@ -22,10 +22,8 @@ int main(int argc, char* args[])
    planet.SetPosition((SCREEN_WIDTH / 2) - planet.m_radius, (SCREEN_HEIGHT / 2) - planet.m_radius);
 
    // Create Sprite
-   Sprite tatanga("res/tatanga.png", 40, 40);
+   Sprite tatanga("res/tatanga.png", 64, 64);
    tatanga.m_planet = &planet;
-   tatanga.StartAnim(0, 6, 7);
-   tatanga.SetPosition(planet.m_x + planet.m_radius - (tatanga.m_width / 2), planet.m_y - tatanga.m_height);
 
    // Main loop
    SDL_Event e;
