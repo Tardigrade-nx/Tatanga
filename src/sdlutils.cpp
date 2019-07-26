@@ -5,6 +5,7 @@
 // Init SDL
 bool SDLUtils::Init()
 {
+   INHIBIT(std::cout << "SDLUtils::Init()" << std::endl;)
    // Initialize SDL
    if (SDL_Init(SDL_INIT_VIDEO) < 0)
    {
@@ -42,6 +43,7 @@ bool SDLUtils::Init()
 // Close SDL
 void SDLUtils::Close()
 {
+   INHIBIT(std::cout << "SDLUtils::Close()" << std::endl;)
    // Renderer
    if (g_renderer != NULL)
    {
@@ -65,6 +67,7 @@ void SDLUtils::Close()
 // Load a texture
 SDL_Texture* SDLUtils::LoadTexture(const std::string &p_path)
 {
+   INHIBIT(std::cout << "SDLUtils::LoadTexture(" << p_path << ")" << std::endl;)
    SDL_Texture* texture = NULL;
    SDL_Surface* surface = IMG_Load(p_path.c_str());
    if (surface == NULL)

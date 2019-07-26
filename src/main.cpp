@@ -22,8 +22,7 @@ int main(int argc, char* args[])
    planet.SetPosition((SCREEN_WIDTH / 2) - planet.m_radius, (SCREEN_HEIGHT / 2) - planet.m_radius);
 
    // Create Sprite
-   Sprite tatanga("res/tatanga.png", 64, 64);
-   tatanga.m_planet = &planet;
+   Sprite tatanga("res/tatanga.png", 64, 64, &planet);
 
    // Main loop
    SDL_Event e;
@@ -37,6 +36,10 @@ int main(int argc, char* args[])
          if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_ESCAPE))
          {
             loop = false;
+         }
+         else
+         {
+            tatanga.Handle(e);
          }
       }
       // Update
