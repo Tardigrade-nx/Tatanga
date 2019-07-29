@@ -3,13 +3,15 @@
 //------------------------------------------------------------------------------
 
 // Constructor
-Planet::Planet(const std::string &p_textureFile, double m_mass):
+Planet::Planet(const std::string &p_textureFile, double p_mass):
    m_texture(NULL),
    m_x(0.0),
    m_y(0.0),
+   m_centerX(0.0),
+   m_centerY(0.0),
    m_diameter(0),
    m_radius(0),
-   m_mass(0.0)
+   m_mass(p_mass)
 {
    m_texture = SDLUtils::LoadTexture(p_textureFile);
    SDL_QueryTexture(m_texture, NULL, NULL, &m_diameter, NULL);
@@ -57,4 +59,6 @@ void Planet::SetPosition(const double &p_x, const double &p_y)
 {
    m_x = p_x;
    m_y = p_y;
+   m_centerX = m_x + m_radius;
+   m_centerY = m_y + m_radius;
 }

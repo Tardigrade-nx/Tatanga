@@ -5,6 +5,7 @@
 // Globals
 SDL_Window* g_window = NULL;
 SDL_Renderer* g_renderer = NULL;
+std::vector<Planet*> g_planets;
 
 //------------------------------------------------------------------------------
 
@@ -17,16 +18,18 @@ int main(int argc, char* args[])
       return 1;
    }
 
-   // Create planet
-   Planet planet("res/planet.png", 10.0);
-   planet.SetPosition((SCREEN_WIDTH / 2) - planet.m_radius, (SCREEN_HEIGHT / 2) - planet.m_radius);
+   // Create planets
+   Planet *planet = new Planet("res/planet.png", 40.0);
+   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius, (SCREEN_HEIGHT / 2) - planet->m_radius);
+   g_planets.push_back(planet);
 
    // Create Sprite
-   Sprite tatanga("res/tatanga.png", 64, 64, &planet);
+   Sprite tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
 
    // Main loop
    SDL_Event e;
    bool loop = true;
+   std::vector<Planet*>::iterator planetIt;
    while (loop)
    {
       // Handle events
@@ -43,16 +46,18 @@ int main(int argc, char* args[])
          }
       }
       // Update
-      planet.Update();
       tatanga.Update();
       // Render
       SDL_RenderClear(g_renderer);
-      planet.Render();
+      for (planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
+         (*planetIt)->Render();
       tatanga.Render();
       SDL_RenderPresent(g_renderer);
    }
 
    // Clean up and quit
+   for (planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
+      delete (*planetIt);
    SDLUtils::Close();
    return 0;
 }

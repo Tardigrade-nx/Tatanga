@@ -96,7 +96,11 @@ class Sprite
    void StartAnim(int p_animId, int p_nbSteps, int p_speed);
 
    // Move sprite with left / right buttons
-   void Move();
+   void MoveOnGround();
+
+   // Move sprite in space
+   // Returns Planet if there's a collision
+   Planet *MoveInSpace();
 
    // Forbidden
    Sprite();

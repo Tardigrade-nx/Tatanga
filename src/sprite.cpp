@@ -75,7 +75,7 @@ void Sprite::Update()
       case SpriteState_Run:
 
          // Move left / right
-         Move();
+         MoveOnGround();
 
          // ----------------
          // Update animation
@@ -114,7 +114,7 @@ void Sprite::Update()
       case SpriteState_Strike:
 
          // Move left / right
-         Move();
+         MoveOnGround();
 
          // ----------------
          // Update animation
@@ -128,16 +128,14 @@ void Sprite::Update()
                START_ANIM_JUMP;
                m_planet = NULL;
                m_state = SpriteState_Jump;
-               m_accelX = 0.0;
-               m_accelY = 0.0;
                // Rotation speed
                m_rotationSpeed = m_speedX * M_PI / 180.0;
                // Tangent speed vector
                m_speedY = abs(m_speedX) * sin(m_flip == SDL_FLIP_NONE ? m_angle + M_PI_2 : m_angle - M_PI_2);
                m_speedX = abs(m_speedX) * cos(m_flip == SDL_FLIP_NONE ? m_angle + M_PI_2 : m_angle - M_PI_2);
                // Vertical speed vector
-               m_speedX += 2.0 * cos(m_angle);
-               m_speedY += 2.0 * sin(m_angle);
+               m_speedX += 4.0 * cos(m_angle);
+               m_speedY += 4.0 * sin(m_angle);
             }
             m_frameCounter = 0;
          }
@@ -151,10 +149,18 @@ void Sprite::Update()
       //========================================================================
       case SpriteState_Jump:
 
-         // Float in space
-         m_x += m_speedX;
-         m_y += m_speedY;
-         m_angle += m_rotationSpeed;
+         // Float in space until collision
+         m_planet = MoveInSpace();
+         if (m_planet != NULL)
+         {
+            // Land on a planet
+            INHIBIT(std::cout << "Collision detected!" << std::endl;)
+            START_ANIM_IDLE;
+            m_speedX = 0.0;
+            m_speedY = 0.0;
+            m_state = SpriteState_Idle;
+            break;
+         }
 
          // Next animation step
          if (m_frameCounter > m_animSpeed)
@@ -225,7 +231,7 @@ void Sprite::SetPosition(const double &p_x, const double &p_y)
 //------------------------------------------------------------------------------
 
 // Move sprite with left / right buttons
-void Sprite::Move()
+void Sprite::MoveOnGround()
 {
    // -------------------
    // Update acceleration
@@ -276,4 +282,36 @@ void Sprite::Move()
    m_angle += m_speedX / m_planet->m_radius;
    m_x = m_planet->m_x + m_planet->m_radius + ((m_planet->m_radius + (m_height / 2) - GAP_SPRITE_GROUND) * cos(m_angle)) - (m_width / 2);
    m_y = m_planet->m_y + m_planet->m_radius + ((m_planet->m_radius + (m_height / 2) - GAP_SPRITE_GROUND) * sin(m_angle)) - (m_height / 2);
+}
+
+//------------------------------------------------------------------------------
+
+// Move sprite in space
+Planet *Sprite::MoveInSpace()
+{
+   // ---------------------------
+   // Update acceleration & speed
+   // ---------------------------
+   double spriteCenterX = m_x + (m_width / 2.0);
+   double spriteCenterY = m_y + (m_height / 2.0);
+   double distanceSpritePlanet = 0.0;
+   for (std::vector<Planet*>::iterator planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
+   {
+      distanceSpritePlanet = sqrt(pow(spriteCenterX - (*planetIt)->m_centerX, 2) + pow(spriteCenterY - (*planetIt)->m_centerY, 2));
+      if (distanceSpritePlanet < (*planetIt)->m_radius + GAP_SPRITE_CENTER_GROUND)
+         return *planetIt;
+      m_accelX = ((*planetIt)->m_centerX - spriteCenterX) * (*planetIt)->m_mass / pow(distanceSpritePlanet, 2);
+      m_accelY = ((*planetIt)->m_centerY - spriteCenterY) * (*planetIt)->m_mass / pow(distanceSpritePlanet, 2);
+      m_speedX += m_accelX;
+      m_speedY += m_accelY;
+   }
+
+   // -------------------
+   // Update position
+   // -------------------
+   m_x += m_speedX;
+   m_y += m_speedY;
+   m_angle += m_rotationSpeed;
+
+   return NULL;
 }

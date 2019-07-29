@@ -11,7 +11,7 @@ class Planet
    public:
 
    // Constructor
-   Planet(const std::string &p_textureFile, double m_mass);
+   Planet(const std::string &p_textureFile, double p_mass);
 
    // Destructor
    virtual ~Planet();
@@ -35,6 +35,8 @@ class Planet
    // Coordinates of the planet
    double m_x;
    double m_y;
+   double m_centerX;
+   double m_centerY;
 
    // Diameter and radius of the planet
    int m_diameter;
