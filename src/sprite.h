@@ -55,7 +55,11 @@ class Sprite
    int m_width;
    int m_height;
 
-   // Speed and acceleration
+   // Speed and acceleration when running on ground
+   double m_accelRun;
+   double m_speedRun;
+
+   // Speed and acceleration when floating in space
    double m_accelX;
    double m_accelY;
    double m_speedX;

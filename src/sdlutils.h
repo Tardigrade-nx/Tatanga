@@ -12,6 +12,9 @@ namespace SDLUtils
    // Close SDL
    void Close();
 
+   // Return a texture, load it if necessary
+   SDL_Texture* GetTexture(const std::string &p_path);
+
    // Load a texture
    SDL_Texture* LoadTexture(const std::string &p_path);
 

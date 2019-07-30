@@ -3,19 +3,17 @@
 //------------------------------------------------------------------------------
 
 // Constructor
-Planet::Planet(const std::string &p_textureFile, double p_mass):
+Planet::Planet(const std::string &p_textureFile, int p_width, double p_mass):
    m_texture(NULL),
    m_x(0.0),
    m_y(0.0),
    m_centerX(0.0),
    m_centerY(0.0),
-   m_diameter(0),
-   m_radius(0),
+   m_diameter(p_width),
+   m_radius(p_width / 2.0),
    m_mass(p_mass)
 {
-   m_texture = SDLUtils::LoadTexture(p_textureFile);
-   SDL_QueryTexture(m_texture, NULL, NULL, &m_diameter, NULL);
-   m_radius = m_diameter / 2;
+   m_texture = SDLUtils::GetTexture(p_textureFile);
 }
 
 //------------------------------------------------------------------------------
@@ -23,11 +21,6 @@ Planet::Planet(const std::string &p_textureFile, double p_mass):
 // Destructor
 Planet::~Planet()
 {
-   if (m_texture != NULL)
-   {
-      SDL_DestroyTexture(m_texture);
-      m_texture = NULL;
-   }
 }
 
 //------------------------------------------------------------------------------

@@ -10,6 +10,8 @@ Sprite::Sprite(const std::string &p_textureFile, int p_width, int p_height, Plan
    m_y(0.0),
    m_width(p_width),
    m_height(p_height),
+   m_accelRun(0.0),
+   m_speedRun(0.0),
    m_accelX(0.0),
    m_accelY(0.0),
    m_speedX(0.0),
@@ -24,7 +26,7 @@ Sprite::Sprite(const std::string &p_textureFile, int p_width, int p_height, Plan
    m_frameCounter(0),
    m_flip(SDL_FLIP_NONE)
 {
-   m_texture = SDLUtils::LoadTexture(p_textureFile);
+   m_texture = SDLUtils::GetTexture(p_textureFile);
    START_ANIM_IDLE;
 }
 
@@ -33,11 +35,6 @@ Sprite::Sprite(const std::string &p_textureFile, int p_width, int p_height, Plan
 // Destructor
 Sprite::~Sprite()
 {
-   if (m_texture != NULL)
-   {
-      SDL_DestroyTexture(m_texture);
-      m_texture = NULL;
-   }
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +77,7 @@ void Sprite::Update()
          // ----------------
          // Update animation
          // ----------------
-         if (m_speedX == 0.0)
+         if (m_speedRun == 0.0)
          {
             if (m_state != SpriteState_Idle)
             {
@@ -95,7 +92,7 @@ void Sprite::Update()
                START_ANIM_RUN;
                m_state = SpriteState_Run;
             }
-            m_animSpeed = RUN_SPEED_MAX - abs(round(m_speedX)) + 1;
+            m_animSpeed = RUN_SPEED_MAX - abs(round(m_speedRun));
          }
          // Next animation step
          if (m_frameCounter > m_animSpeed)
@@ -128,14 +125,14 @@ void Sprite::Update()
                START_ANIM_JUMP;
                m_planet = NULL;
                m_state = SpriteState_Jump;
-               // Rotation speed
-               m_rotationSpeed = m_speedX * M_PI / 180.0;
                // Tangent speed vector
-               m_speedY = abs(m_speedX) * sin(m_flip == SDL_FLIP_NONE ? m_angle + M_PI_2 : m_angle - M_PI_2);
-               m_speedX = abs(m_speedX) * cos(m_flip == SDL_FLIP_NONE ? m_angle + M_PI_2 : m_angle - M_PI_2);
+               m_speedX = abs(m_speedRun) * cos(m_flip == SDL_FLIP_NONE ? m_angle + M_PI_2 : m_angle - M_PI_2);
+               m_speedY = abs(m_speedRun) * sin(m_flip == SDL_FLIP_NONE ? m_angle + M_PI_2 : m_angle - M_PI_2);
                // Vertical speed vector
                m_speedX += 4.0 * cos(m_angle);
                m_speedY += 4.0 * sin(m_angle);
+               // Rotation speed
+               m_rotationSpeed = m_speedRun * M_PI / 180.0;
             }
             m_frameCounter = 0;
          }
@@ -155,9 +152,8 @@ void Sprite::Update()
          {
             // Land on a planet
             INHIBIT(std::cout << "Collision detected!" << std::endl;)
+            m_speedRun = 0.0;
             START_ANIM_IDLE;
-            m_speedX = 0.0;
-            m_speedY = 0.0;
             m_state = SpriteState_Idle;
             break;
          }
@@ -238,48 +234,48 @@ void Sprite::MoveOnGround()
    // -------------------
    if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && !SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT])
    {
-      m_accelX = RUN_ACCELERATION;
+      m_accelRun = RUN_ACCELERATION;
       if (m_flip != SDL_FLIP_NONE)
          m_flip = SDL_FLIP_NONE;
    }
    else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && !SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT])
    {
-      m_accelX = -RUN_ACCELERATION;
+      m_accelRun = -RUN_ACCELERATION;
       if (m_flip != SDL_FLIP_HORIZONTAL)
          m_flip = SDL_FLIP_HORIZONTAL;
    }
    else
    {
-      m_accelX = 0.0;
+      m_accelRun = 0.0;
    }
 
    // -------------------
    // Update speed
    // -------------------
-   if (m_accelX == 0.0 && m_speedX != 0.0)
+   if (m_accelRun == 0.0 && m_speedRun != 0.0)
    {
       // Deceleration
-      m_speedX += m_speedX > 0.0 ? -RUN_DECELERATION : RUN_DECELERATION;
-      if (m_speedX < RUN_DECELERATION && m_speedX > -RUN_DECELERATION)
-         m_speedX = 0.0;
+      m_speedRun += m_speedRun > 0.0 ? -RUN_DECELERATION : RUN_DECELERATION;
+      if (m_speedRun < RUN_DECELERATION && m_speedRun > -RUN_DECELERATION)
+         m_speedRun = 0.0;
    }
    else
    {
       // Acceleration
-      if (m_speedX * m_accelX < 0.0)
-         m_speedX += 2 * m_accelX;
+      if (m_speedRun * m_accelRun < 0.0)
+         m_speedRun += 2 * m_accelRun;
       else
-         m_speedX += m_accelX;
-      if (m_speedX > RUN_SPEED_MAX)
-         m_speedX = RUN_SPEED_MAX;
-      else if (m_speedX < -RUN_SPEED_MAX)
-         m_speedX = -RUN_SPEED_MAX;
+         m_speedRun += m_accelRun;
+      if (m_speedRun > RUN_SPEED_MAX)
+         m_speedRun = RUN_SPEED_MAX;
+      else if (m_speedRun < -RUN_SPEED_MAX)
+         m_speedRun = -RUN_SPEED_MAX;
    }
 
    // -------------------
    // Update position
    // -------------------
-   m_angle += m_speedX / m_planet->m_radius;
+   m_angle += m_speedRun / m_planet->m_radius;
    m_x = m_planet->m_x + m_planet->m_radius + ((m_planet->m_radius + (m_height / 2) - GAP_SPRITE_GROUND) * cos(m_angle)) - (m_width / 2);
    m_y = m_planet->m_y + m_planet->m_radius + ((m_planet->m_radius + (m_height / 2) - GAP_SPRITE_GROUND) * sin(m_angle)) - (m_height / 2);
 }
@@ -299,7 +295,12 @@ Planet *Sprite::MoveInSpace()
    {
       distanceSpritePlanet = sqrt(pow(spriteCenterX - (*planetIt)->m_centerX, 2) + pow(spriteCenterY - (*planetIt)->m_centerY, 2));
       if (distanceSpritePlanet < (*planetIt)->m_radius + GAP_SPRITE_CENTER_GROUND)
+      {
+         m_angle = atan((spriteCenterY - (*planetIt)->m_centerY) / (spriteCenterX - (*planetIt)->m_centerX));
+         if (spriteCenterX < (*planetIt)->m_centerX)
+            m_angle += M_PI;
          return *planetIt;
+      }
       m_accelX = ((*planetIt)->m_centerX - spriteCenterX) * (*planetIt)->m_mass / pow(distanceSpritePlanet, 2);
       m_accelY = ((*planetIt)->m_centerY - spriteCenterY) * (*planetIt)->m_mass / pow(distanceSpritePlanet, 2);
       m_speedX += m_accelX;

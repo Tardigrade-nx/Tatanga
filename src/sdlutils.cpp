@@ -44,6 +44,9 @@ bool SDLUtils::Init()
 void SDLUtils::Close()
 {
    INHIBIT(std::cout << "SDLUtils::Close()" << std::endl;)
+   // Textures
+   for (std::map<std::string, SDL_Texture*>::iterator it = g_textures.begin(); it != g_textures.end(); ++it)
+      SDL_DestroyTexture(it->second);
    // Renderer
    if (g_renderer != NULL)
    {
@@ -83,4 +86,21 @@ SDL_Texture* SDLUtils::LoadTexture(const std::string &p_path)
    }
    SDL_FreeSurface(surface);
    return texture;
+}
+
+//------------------------------------------------------------------------------
+
+// Return a texture, load it if necessary
+SDL_Texture* SDLUtils::GetTexture(const std::string &p_path)
+{
+   INHIBIT(std::cout << "SDLUtils::GetTexture(" << p_path << ")" << std::endl;)
+   // Search texture
+   std::map<std::string, SDL_Texture*>::iterator it = g_textures.find(p_path);
+   if (it != g_textures.end())
+      return it->second;
+   // First time asking for this texture => load it
+   SDL_Texture *tex = LoadTexture(p_path);
+   if (tex != NULL)
+      g_textures.insert(std::pair<std::string, SDL_Texture*>(p_path, tex));
+   return tex;
 }

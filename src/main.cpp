@@ -5,6 +5,7 @@
 // Globals
 SDL_Window* g_window = NULL;
 SDL_Renderer* g_renderer = NULL;
+std::map<std::string, SDL_Texture*> g_textures;
 std::vector<Planet*> g_planets;
 
 //------------------------------------------------------------------------------
@@ -19,8 +20,14 @@ int main(int argc, char* args[])
    }
 
    // Create planets
-   Planet *planet = new Planet("res/planet.png", 40.0);
-   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius, (SCREEN_HEIGHT / 2) - planet->m_radius);
+   Planet *planet = new Planet("res/planet.png", 180, 30.0);
+   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius - 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 100);
+   g_planets.push_back(planet);
+   planet = new Planet("res/planet.png", 180, 30.0);
+   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius + 300, (SCREEN_HEIGHT / 2) - planet->m_radius - 200);
+   g_planets.push_back(planet);
+   planet = new Planet("res/planet.png", 130, 20.0);
+   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius + 100, (SCREEN_HEIGHT / 2) - planet->m_radius + 200);
    g_planets.push_back(planet);
 
    // Create Sprite

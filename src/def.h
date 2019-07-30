@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 #include <cmath>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -18,7 +19,7 @@
 // Constants for sprite
 #define GAP_SPRITE_GROUND           11
 #define GAP_SPRITE_CENTER_GROUND    20
-#define RUN_SPEED_MAX               5.0
+#define RUN_SPEED_MAX               6.0
 #define RUN_ACCELERATION            0.1
 #define RUN_DECELERATION            0.1
 #define START_ANIM_IDLE             StartAnim(0, 6, 7)
@@ -28,6 +29,7 @@
 
 extern SDL_Window* g_window;
 extern SDL_Renderer* g_renderer;
+extern std::map<std::string, SDL_Texture*> g_textures;
 
 class Planet;
 extern std::vector<Planet*> g_planets;
