@@ -152,9 +152,18 @@ void Sprite::Update()
          {
             // Land on a planet
             INHIBIT(std::cout << "Collision detected!" << std::endl;)
-            m_speedRun = 0.0;
-            START_ANIM_IDLE;
-            m_state = SpriteState_Idle;
+            if (m_speedRun < 1.0 && m_speedRun > -1.0)
+            {
+               m_speedRun = 0.0;
+               START_ANIM_IDLE;
+               m_state = SpriteState_Idle;
+            }
+            else
+            {
+               m_flip = m_speedRun > 0.0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+               START_ANIM_RUN;
+               m_state = SpriteState_Run;
+            }
             break;
          }
 
@@ -296,9 +305,16 @@ Planet *Sprite::MoveInSpace()
       distanceSpritePlanet = sqrt(pow(spriteCenterX - (*planetIt)->m_centerX, 2) + pow(spriteCenterY - (*planetIt)->m_centerY, 2));
       if (distanceSpritePlanet < (*planetIt)->m_radius + GAP_SPRITE_CENTER_GROUND)
       {
+         // Angle of rotation at contact
          m_angle = atan((spriteCenterY - (*planetIt)->m_centerY) / (spriteCenterX - (*planetIt)->m_centerX));
          if (spriteCenterX < (*planetIt)->m_centerX)
             m_angle += M_PI;
+         // Run speed at contact
+         m_speedRun = (m_speedX * sin(-m_angle) + m_speedY * cos(-m_angle)) * 0.7;
+         if (m_speedRun > RUN_SPEED_MAX)
+            m_speedRun = RUN_SPEED_MAX;
+         else if (m_speedRun < -RUN_SPEED_MAX)
+            m_speedRun = -RUN_SPEED_MAX;
          return *planetIt;
       }
       m_accelX = ((*planetIt)->m_centerX - spriteCenterX) * (*planetIt)->m_mass / pow(distanceSpritePlanet, 2);

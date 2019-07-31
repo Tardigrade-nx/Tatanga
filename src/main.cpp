@@ -21,10 +21,13 @@ int main(int argc, char* args[])
 
    // Create planets
    Planet *planet = new Planet("res/earth.png", 200, 30.0);
-   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius - 300, (SCREEN_HEIGHT / 2) - planet->m_radius + 100);
+   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius - 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 150);
    g_planets.push_back(planet);
-   planet = new Planet("res/moon.png", 130, 30.0);
-   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius + 300, (SCREEN_HEIGHT / 2) - planet->m_radius - 100);
+   planet = new Planet("res/moon.png", 130, 27.0);
+   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius, (SCREEN_HEIGHT / 2) - planet->m_radius - 200);
+   g_planets.push_back(planet);
+   planet = new Planet("res/planet.png", 200, 30.0);
+   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius + 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 100);
    g_planets.push_back(planet);
 
    // Create Sprite
