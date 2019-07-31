@@ -34,7 +34,7 @@ bool SDLUtils::Init()
       return false;
    }
    // Set draw color
-   SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+   SDL_SetRenderDrawColor(g_renderer, 0xA0, 0xA0, 0xA0, 0xFF);
    return true;
 }
 

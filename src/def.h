@@ -17,8 +17,8 @@
 #define SCREEN_HEIGHT 720
 
 // Constants for sprite
-#define GAP_SPRITE_GROUND           11
-#define GAP_SPRITE_CENTER_GROUND    20
+#define GAP_SPRITE_GROUND           12
+#define GAP_SPRITE_CENTER_GROUND    19
 #define RUN_SPEED_MAX               6.0
 #define RUN_ACCELERATION            0.1
 #define RUN_DECELERATION            0.1
