@@ -1,16 +1,8 @@
 #ifndef _SPRITE_H_
 #define _SPRITE_H_
 
-#include "def.h"
-
-typedef enum
-{
-   SpriteState_Idle = 0,
-   SpriteState_Run,
-   SpriteState_Strike,
-   SpriteState_Jump
-}
-SpriteState;
+#include <string>
+#include <SDL2/SDL.h>
 
 //------------------------------------------------------------------------------
 
@@ -20,19 +12,19 @@ class Sprite
    public:
 
    // Constructor
-   Sprite(const std::string &p_textureFile, int p_width, int p_height, Planet *p_planet);
+   Sprite(const std::string &p_textureFile, int p_width, int p_height);
 
    // Destructor
    virtual ~Sprite();
 
    // Handle events
-   void Handle(const SDL_Event &p_event);
+   virtual void Handle(const SDL_Event &p_event);
 
    // Update sprite state at each frame
-   void Update();
+   virtual void Update();
 
    // Render sprite
-   void Render();
+   virtual void Render();
 
    // Set x and y coordinates
    void SetPosition(const double &p_x, const double &p_y);
@@ -44,9 +36,6 @@ class Sprite
    // Texture containing the sprite sheet
    SDL_Texture *m_texture;
 
-   // Sprite state
-   SpriteState m_state;
-
    // Coordinates of the sprite
    double m_x;
    double m_y;
@@ -55,24 +44,8 @@ class Sprite
    int m_width;
    int m_height;
 
-   // Speed and acceleration when running on ground
-   double m_accelRun;
-   double m_speedRun;
-
-   // Speed and acceleration when floating in space
-   double m_accelX;
-   double m_accelY;
-   double m_speedX;
-   double m_speedY;
-
-   // Planet where the sprite is walking on
-   Planet *m_planet;
-
-   // Angle of the sprite on the planet, in radians
+   // Rotation angle of sprite, in radians, trigonometry coordinates (vertical = -PI/2)
    double m_angle;
-
-   // Rotation speed when floating, in radians
-   double m_rotationSpeed;
 
    // Animation id (ie. row)
    int m_animId;
@@ -94,17 +67,14 @@ class Sprite
 
 //------------------------------------------------------------------------------
 
-   private:
+   protected:
 
    // Start animation
    void StartAnim(int p_animId, int p_nbSteps, int p_speed);
 
-   // Move sprite with left / right buttons
-   void MoveOnGround();
+//------------------------------------------------------------------------------
 
-   // Move sprite in space
-   // Returns Planet if there's a collision
-   Planet *MoveInSpace();
+   private:
 
    // Forbidden
    Sprite();

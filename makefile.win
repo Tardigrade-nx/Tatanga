@@ -6,7 +6,7 @@ INCLUDE_PATHS = -IC:\mingw_dev_lib\SDL2-2.0.9\i686-w64-mingw32\include \
 LIBRARY_PATHS = -LC:\mingw_dev_lib\SDL2-2.0.9\i686-w64-mingw32\lib \
                 -LC:\mingw_dev_lib\SDL2_image-2.0.3\i686-w64-mingw32\lib
 # Add '-Wl,-subsystem,windows' to COMPILER_FLAGS to get rid of the console window
-COMPILER_FLAGS = -Wall -pedantic
+COMPILER_FLAGS = -Wall -pedantic -Wfatal-errors
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 OBJ_NAME = Tatanga
 
@@ -19,4 +19,4 @@ all : $(OBJS)
 	cp c:\mingw_dev_lib\SDL2_image-2.0.3\i686-w64-mingw32\bin\SDL2_image.dll .
 
 clean :
-	rm -f $(OBJ_NAME) SDL2.dll libstdc++-6.dll libpng16-16.dll SDL2_image.dll zlib1.dll
+	rm -f $(OBJ_NAME) src/*.o SDL2.dll libstdc++-6.dll libpng16-16.dll SDL2_image.dll zlib1.dll

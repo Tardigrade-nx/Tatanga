@@ -1,4 +1,10 @@
+#include <vector>
+#include <map>
+#include <SDL2/SDL.h>
 #include "def.h"
+#include "sdlutils.h"
+#include "planet.h"
+#include "tatanga.h"
 
 //------------------------------------------------------------------------------
 
@@ -30,8 +36,8 @@ int main(int argc, char* args[])
    planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius + 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 100);
    g_planets.push_back(planet);
 
-   // Create Sprite
-   Sprite tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
+   // Create Tatanga
+   Tatanga tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
 
    // Main loop
    SDL_Event e;

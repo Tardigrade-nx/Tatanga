@@ -1,6 +1,6 @@
 OBJS = $(wildcard src/*.cpp)
 CC = g++
-COMPILER_FLAGS = -Wall -pedantic
+COMPILER_FLAGS = -Wall -pedantic -Wfatal-errors
 LINKER_FLAGS = -lSDL2 -lSDL2_image
 OBJ_NAME = Tatanga
 
@@ -8,4 +8,4 @@ all : $(OBJS)
 	$(CC) $(OBJS) -o $(OBJ_NAME) $(COMPILER_FLAGS) $(LINKER_FLAGS)
 
 clean :
-	rm -f $(OBJ_NAME)
+	rm -f $(OBJ_NAME) src/*.o

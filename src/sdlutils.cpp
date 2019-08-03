@@ -1,3 +1,6 @@
+#include <iostream>
+#include <SDL2/SDL_image.h>
+#include "sdlutils.h"
 #include "def.h"
 
 //------------------------------------------------------------------------------

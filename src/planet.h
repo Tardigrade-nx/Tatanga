@@ -1,7 +1,8 @@
 #ifndef _PLANET_H_
 #define _PLANET_H_
 
-#include "def.h"
+#include <string>
+#include <SDL2/SDL.h>
 
 class Planet
 {
