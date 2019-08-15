@@ -99,15 +99,7 @@ void Tatanga::Update()
             m_animSpeed = RUN_SPEED_MAX - abs(round(m_speedRun));
          }
          // Next animation step
-         if (m_frameCounter > m_animSpeed)
-         {
-            m_animStep = (m_animStep + 1) % m_animNbSteps;
-            m_frameCounter = 0;
-         }
-         else
-         {
-            ++m_frameCounter;
-         }
+         Sprite::Update();
 
          break;
 

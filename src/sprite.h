@@ -29,6 +29,9 @@ class Sprite
    // Set x and y coordinates
    void SetPosition(const double &p_x, const double &p_y);
 
+   // Start animation
+   void StartAnim(int p_animId, int p_nbSteps, int p_speed);
+
 //------------------------------------------------------------------------------
 
    public:
@@ -64,13 +67,6 @@ class Sprite
 
    // Sprite flip mode
    SDL_RendererFlip m_flip;
-
-//------------------------------------------------------------------------------
-
-   protected:
-
-   // Start animation
-   void StartAnim(int p_animId, int p_nbSteps, int p_speed);
 
 //------------------------------------------------------------------------------
 

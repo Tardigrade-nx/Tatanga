@@ -13,6 +13,7 @@ SDL_Window* g_window = NULL;
 SDL_Renderer* g_renderer = NULL;
 std::map<std::string, SDL_Texture*> g_textures;
 std::vector<Planet*> g_planets;
+std::vector<Sprite*> g_cherries;
 
 //------------------------------------------------------------------------------
 
@@ -37,12 +38,23 @@ int main(int argc, char* args[])
    g_planets.push_back(planet);
 
    // Create Tatanga
-   Tatanga tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
+   Tatanga *tatanga = new Tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
+
+   // Create cherries
+   Sprite *cherry = new Sprite("res/cherry.png", 16, 16);
+   cherry->SetPosition(10.0, 10.0);
+   cherry->StartAnim(0, 6, 8);
+   g_cherries.push_back(cherry);
+   cherry = new Sprite("res/cherry.png", 16, 16);
+   cherry->SetPosition(30.0, 30.0);
+   cherry->StartAnim(0, 6, 8);
+   g_cherries.push_back(cherry);
 
    // Main loop
    SDL_Event e;
    bool loop = true;
    std::vector<Planet*>::iterator planetIt;
+   std::vector<Sprite*>::iterator spriteIt;
    while (loop)
    {
       // Handle events
@@ -55,22 +67,29 @@ int main(int argc, char* args[])
          }
          else
          {
-            tatanga.Handle(e);
+            tatanga->Handle(e);
          }
       }
       // Update
-      tatanga.Update();
+      tatanga->Update();
+      for (spriteIt = g_cherries.begin(); spriteIt != g_cherries.end(); ++spriteIt)
+         (*spriteIt)->Update();
       // Render
       SDL_RenderClear(g_renderer);
       for (planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
          (*planetIt)->Render();
-      tatanga.Render();
+      for (spriteIt = g_cherries.begin(); spriteIt != g_cherries.end(); ++spriteIt)
+         (*spriteIt)->Render();
+      tatanga->Render();
       SDL_RenderPresent(g_renderer);
    }
 
    // Clean up and quit
+   delete tatanga;
    for (planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
-      delete (*planetIt);
+      delete *planetIt;
+   for (spriteIt = g_cherries.begin(); spriteIt != g_cherries.end(); ++spriteIt)
+      delete *spriteIt;
    SDLUtils::Close();
    return 0;
 }

@@ -42,6 +42,16 @@ void Sprite::Handle(const SDL_Event &p_event)
 // Update sprite state at each frame
 void Sprite::Update()
 {
+   // Next animation step
+   if (m_frameCounter > m_animSpeed)
+   {
+      m_animStep = (m_animStep + 1) % m_animNbSteps;
+      m_frameCounter = 0;
+   }
+   else
+   {
+      ++m_frameCounter;
+   }
 }
 
 //------------------------------------------------------------------------------
