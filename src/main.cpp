@@ -1,4 +1,4 @@
-#include <vector>
+#include <list>
 #include <map>
 #include <SDL2/SDL.h>
 #include "def.h"
@@ -12,8 +12,8 @@
 SDL_Window* g_window = NULL;
 SDL_Renderer* g_renderer = NULL;
 std::map<std::string, SDL_Texture*> g_textures;
-std::vector<Planet*> g_planets;
-std::vector<Sprite*> g_cherries;
+std::list<Planet*> g_planets;
+std::list<Sprite*> g_cherries;
 
 //------------------------------------------------------------------------------
 
@@ -28,33 +28,41 @@ int main(int argc, char* args[])
 
    // Create planets
    Planet *planet = new Planet("res/earth.png", 200, 30.0);
-   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius - 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 150);
+   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius, (SCREEN_HEIGHT / 2) - planet->m_radius);
    g_planets.push_back(planet);
-   planet = new Planet("res/moon.png", 130, 27.0);
-   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius, (SCREEN_HEIGHT / 2) - planet->m_radius - 200);
-   g_planets.push_back(planet);
-   planet = new Planet("res/planet.png", 200, 30.0);
-   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius + 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 100);
-   g_planets.push_back(planet);
+   //~ Planet *planet = new Planet("res/earth.png", 200, 30.0);
+   //~ planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius - 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 150);
+   //~ g_planets.push_back(planet);
+   //~ planet = new Planet("res/moon.png", 130, 27.0);
+   //~ planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius, (SCREEN_HEIGHT / 2) - planet->m_radius - 200);
+   //~ g_planets.push_back(planet);
+   //~ planet = new Planet("res/planet.png", 200, 30.0);
+   //~ planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius + 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 100);
+   //~ g_planets.push_back(planet);
 
    // Create Tatanga
    Tatanga *tatanga = new Tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
 
    // Create cherries
-   Sprite *cherry = new Sprite("res/cherry.png", 16, 16);
-   cherry->SetPosition(10.0, 10.0);
+   Sprite *cherry;
+   cherry = new Sprite("res/cherry.png", 16, 16);
+   cherry->SetPosition((SCREEN_WIDTH - cherry->m_width) / 2.0, (SCREEN_HEIGHT - cherry->m_height) / 2.0 - 240);
    cherry->StartAnim(0, 6, 8);
    g_cherries.push_back(cherry);
    cherry = new Sprite("res/cherry.png", 16, 16);
-   cherry->SetPosition(30.0, 30.0);
+   cherry->SetPosition(738, 401);
+   cherry->StartAnim(0, 6, 8);
+   g_cherries.push_back(cherry);
+   cherry = new Sprite("res/cherry.png", 16, 16);
+   cherry->SetPosition(528, 463);
    cherry->StartAnim(0, 6, 8);
    g_cherries.push_back(cherry);
 
    // Main loop
    SDL_Event e;
    bool loop = true;
-   std::vector<Planet*>::iterator planetIt;
-   std::vector<Sprite*>::iterator spriteIt;
+   std::list<Planet*>::iterator planetIt;
+   std::list<Sprite*>::iterator spriteIt;
    while (loop)
    {
       // Handle events
@@ -72,8 +80,19 @@ int main(int argc, char* args[])
       }
       // Update
       tatanga->Update();
-      for (spriteIt = g_cherries.begin(); spriteIt != g_cherries.end(); ++spriteIt)
+      for (spriteIt = g_cherries.begin(); spriteIt != g_cherries.end();)
+      {
          (*spriteIt)->Update();
+         // Collision Tatanga / cherry
+         if (sqrt(pow(tatanga->m_centerX - (*spriteIt)->m_centerX, 2) + pow(tatanga->m_centerY - (*spriteIt)->m_centerY, 2)) < 20.0)
+         {
+            spriteIt = g_cherries.erase(spriteIt);
+         }
+         else
+         {
+            ++spriteIt;
+         }
+      }
       // Render
       SDL_RenderClear(g_renderer);
       for (planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)

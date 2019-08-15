@@ -1,7 +1,7 @@
 #ifndef _DEF_H_
 #define _DEF_H_
 
-#include <vector>
+#include <list>
 #include <map>
 #include <SDL2/SDL.h>
 
@@ -18,10 +18,10 @@ extern std::map<std::string, SDL_Texture*> g_textures;
 
 // Planets
 class Planet;
-extern std::vector<Planet*> g_planets;
+extern std::list<Planet*> g_planets;
 
 // Cherries
 class Sprite;
-extern std::vector<Sprite*> g_cherries;
+extern std::list<Sprite*> g_cherries;
 
 #endif

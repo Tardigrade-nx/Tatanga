@@ -42,6 +42,8 @@ class Sprite
    // Coordinates of the sprite
    double m_x;
    double m_y;
+   double m_centerX;
+   double m_centerY;
 
    // Width and height of a sprite frame
    int m_width;

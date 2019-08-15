@@ -122,13 +122,13 @@ void Tatanga::Update()
                m_planet = NULL;
                m_state = TatangaState_Jump;
                // Tangent speed vector
-               m_speedX = abs(m_speedRun) * cos(m_flip == SDL_FLIP_NONE ? m_angle + M_PI_2 : m_angle - M_PI_2);
-               m_speedY = abs(m_speedRun) * sin(m_flip == SDL_FLIP_NONE ? m_angle + M_PI_2 : m_angle - M_PI_2);
+               m_speedX = abs(m_speedRun) * cos(m_speedRun > 0.0 ? m_angle + M_PI_2 : m_angle - M_PI_2);
+               m_speedY = abs(m_speedRun) * sin(m_speedRun > 0.0 ? m_angle + M_PI_2 : m_angle - M_PI_2);
                // Vertical speed vector
                m_speedX += 4.0 * cos(m_angle);
                m_speedY += 4.0 * sin(m_angle);
                // Rotation speed
-               m_rotationSpeed = m_speedRun * M_PI / 180.0;
+               m_rotationSpeed = m_speedRun * M_PI * 1.2 / 180.0;
             }
             m_frameCounter = 0;
          }
@@ -240,6 +240,8 @@ void Tatanga::MoveOnGround()
    m_angle += m_speedRun / m_planet->m_radius;
    m_x = m_planet->m_x + m_planet->m_radius + ((m_planet->m_radius + (m_height / 2) - GAP_SPRITE_GROUND) * cos(m_angle)) - (m_width / 2);
    m_y = m_planet->m_y + m_planet->m_radius + ((m_planet->m_radius + (m_height / 2) - GAP_SPRITE_GROUND) * sin(m_angle)) - (m_height / 2);
+   m_centerX = m_x + m_width / 2.0;
+   m_centerY = m_y + m_height / 2.0;
 }
 
 //------------------------------------------------------------------------------
@@ -250,17 +252,15 @@ Planet *Tatanga::MoveInSpace()
    // ---------------------------
    // Update acceleration & speed
    // ---------------------------
-   double tatangaCenterX = m_x + (m_width / 2.0);
-   double tatangaCenterY = m_y + (m_height / 2.0);
    double distanceTatangaPlanet = 0.0;
-   for (std::vector<Planet*>::iterator planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
+   for (std::list<Planet*>::iterator planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
    {
-      distanceTatangaPlanet = sqrt(pow(tatangaCenterX - (*planetIt)->m_centerX, 2) + pow(tatangaCenterY - (*planetIt)->m_centerY, 2));
+      distanceTatangaPlanet = sqrt(pow(m_centerX - (*planetIt)->m_centerX, 2) + pow(m_centerY - (*planetIt)->m_centerY, 2));
       if (distanceTatangaPlanet < (*planetIt)->m_radius + GAP_SPRITE_CENTER_GROUND)
       {
          // Angle of rotation at contact
-         m_angle = atan((tatangaCenterY - (*planetIt)->m_centerY) / (tatangaCenterX - (*planetIt)->m_centerX));
-         if (tatangaCenterX < (*planetIt)->m_centerX)
+         m_angle = atan((m_centerY - (*planetIt)->m_centerY) / (m_centerX - (*planetIt)->m_centerX));
+         if (m_centerX < (*planetIt)->m_centerX)
             m_angle += M_PI;
          // Run speed at contact
          m_speedRun = (m_speedX * sin(-m_angle) + m_speedY * cos(-m_angle)) * 0.7;
@@ -270,8 +270,8 @@ Planet *Tatanga::MoveInSpace()
             m_speedRun = -RUN_SPEED_MAX;
          return *planetIt;
       }
-      m_accelX = ((*planetIt)->m_centerX - tatangaCenterX) * (*planetIt)->m_mass / pow(distanceTatangaPlanet, 2);
-      m_accelY = ((*planetIt)->m_centerY - tatangaCenterY) * (*planetIt)->m_mass / pow(distanceTatangaPlanet, 2);
+      m_accelX = ((*planetIt)->m_centerX - m_centerX) * (*planetIt)->m_mass / pow(distanceTatangaPlanet, 2);
+      m_accelY = ((*planetIt)->m_centerY - m_centerY) * (*planetIt)->m_mass / pow(distanceTatangaPlanet, 2);
       m_speedX += m_accelX;
       m_speedY += m_accelY;
    }
@@ -281,6 +281,8 @@ Planet *Tatanga::MoveInSpace()
    // -------------------
    m_x += m_speedX;
    m_y += m_speedY;
+   m_centerX = m_x + m_width / 2.0;
+   m_centerY = m_y + m_height / 2.0;
    m_angle += m_rotationSpeed;
 
    return NULL;

@@ -10,6 +10,8 @@ Sprite::Sprite(const std::string &p_textureFile, int p_width, int p_height):
    m_texture(NULL),
    m_x(0.0),
    m_y(0.0),
+   m_centerX(p_width / 2.0),
+   m_centerY(p_height / 2.0),
    m_width(p_width),
    m_height(p_height),
    m_angle(-M_PI_2),
@@ -82,6 +84,8 @@ void Sprite::SetPosition(const double &p_x, const double &p_y)
    INHIBIT(std::cout << "Sprite::SetPosition(" << p_x << ", " << p_y << ")" << std::endl;)
    m_x = p_x;
    m_y = p_y;
+   m_centerX = m_x + m_width / 2.0;
+   m_centerY = m_y + m_height / 2.0;
 }
 
 //------------------------------------------------------------------------------
