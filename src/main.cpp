@@ -1,6 +1,8 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <string>
+#include <cmath>
 #include <SDL2/SDL.h>
 #include "def.h"
 #include "sdlutils.h"

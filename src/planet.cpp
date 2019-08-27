@@ -1,3 +1,4 @@
+#include <cmath>
 #include "planet.h"
 #include "sdlutils.h"
 #include "def.h"
