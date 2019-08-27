@@ -1,3 +1,4 @@
+#include <iostream>
 #include <list>
 #include <map>
 #include <SDL2/SDL.h>
@@ -46,7 +47,7 @@ int main(int argc, char* args[])
    // Create cherries
    Sprite *cherry;
    cherry = new Sprite("res/cherry.png", 16, 16);
-   cherry->SetPosition((SCREEN_WIDTH - cherry->m_width) / 2.0, (SCREEN_HEIGHT - cherry->m_height) / 2.0 - 240);
+   cherry->SetPosition(632, 100);
    cherry->StartAnim(0, 6, 8);
    g_cherries.push_back(cherry);
    cherry = new Sprite("res/cherry.png", 16, 16);
@@ -87,6 +88,7 @@ int main(int argc, char* args[])
          if (sqrt(pow(tatanga->m_centerX - (*spriteIt)->m_centerX, 2) + pow(tatanga->m_centerY - (*spriteIt)->m_centerY, 2)) < 20.0)
          {
             spriteIt = g_cherries.erase(spriteIt);
+            INHIBIT(std::cout << "Cherry get! Remaining: " << g_cherries.size() << std::endl;)
          }
          else
          {
