@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "sprite.h"
 #include "sdlutils.h"
 #include "def.h"

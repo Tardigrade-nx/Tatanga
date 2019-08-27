@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "planet.h"
 #include "tatanga.h"
 #include "def.h"
