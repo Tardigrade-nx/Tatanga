@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include <string>
 #include <SDL2/SDL.h>
 
 #define INHIBIT(X) X
