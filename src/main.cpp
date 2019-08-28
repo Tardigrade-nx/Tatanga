@@ -30,37 +30,11 @@ int main(int argc, char* args[])
       return 1;
    }
 
-   // Create planets
-   Planet *planet = new Planet("res/earth.png", 200, 30.0);
-   planet->SetPosition(540, 260);
-   g_planets.push_back(planet);
-   //~ Planet *planet = new Planet("res/earth.png", 200, 30.0);
-   //~ planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius - 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 150);
-   //~ g_planets.push_back(planet);
-   //~ planet = new Planet("res/moon.png", 130, 27.0);
-   //~ planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius, (SCREEN_HEIGHT / 2) - planet->m_radius - 200);
-   //~ g_planets.push_back(planet);
-   //~ planet = new Planet("res/planet.png", 200, 30.0);
-   //~ planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius + 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 100);
-   //~ g_planets.push_back(planet);
+   // Load first level
+   Levels::load(2);
 
    // Create Tatanga
    Tatanga *tatanga = new Tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
-
-   // Create cherries
-   Sprite *cherry;
-   cherry = new Sprite("res/cherry.png", 16, 16);
-   cherry->SetPosition(632, 112);
-   cherry->StartAnim(0, 6, 8);
-   g_cherries.push_back(cherry);
-   cherry = new Sprite("res/cherry.png", 16, 16);
-   cherry->SetPosition(738, 401);
-   cherry->StartAnim(0, 6, 8);
-   g_cherries.push_back(cherry);
-   cherry = new Sprite("res/cherry.png", 16, 16);
-   cherry->SetPosition(528, 463);
-   cherry->StartAnim(0, 6, 8);
-   g_cherries.push_back(cherry);
 
    // Main loop
    SDL_Event e;
@@ -77,6 +51,14 @@ int main(int argc, char* args[])
          {
             loop = false;
          }
+         INHIBIT(
+         // Level editor
+         else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
+         {
+            Planet *planet = *g_planets.begin();
+            planet->SetPosition(e.button.x - planet->m_radius, e.button.y - planet->m_radius);
+         }
+         )
          else
          {
             tatanga->Handle(e);

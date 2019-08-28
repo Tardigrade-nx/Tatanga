@@ -1,5 +1,6 @@
 #include <list>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <iostream>
 #include "levels.h"
@@ -15,10 +16,15 @@
 bool Levels::load(int p_levelNumber)
 {
    INHIBIT(std::cout << "Levels::load(" << p_levelNumber << ")" << std::endl;)
+
    // Unload existing level
    unload();
    if (p_levelNumber < 1)
+   {
+      std::cerr << "Levels::load: invalid level number: '" << p_levelNumber << "'"<< std::endl;
       return false;
+   }
+
    // Read level line in file
    std::ifstream ifs(LEVELS_FILE);
    if (! ifs.is_open())
@@ -40,14 +46,50 @@ bool Levels::load(int p_levelNumber)
       std::cerr << "Levels::load: level '" << p_levelNumber << "' not found in file '" << LEVELS_FILE << "'"<< std::endl;
       return false;
    }
+
    // Read planets and cherries in line
-   std::string id("");
+   char id(0);
    std::string name("");
    int width(0);
    double mass(0.0);
    double posX(0.0);
    double posY(0.0);
-   // TODO
+   std::istringstream iss(line);
+   Planet *planet = NULL;
+   Sprite *cherry = NULL;
+   while (! iss.eof())
+   {
+      // Read element id
+      iss >> id;
+      switch (id)
+      {
+         case 'P':
+            // Add planet
+            iss >> name;
+            iss >> width;
+            iss >> mass;
+            iss >> posX;
+            iss >> posY;
+            INHIBIT(std::cout << "Adding planet '" << name << "' " << width << " " << mass << " " << posX << " " << posY << std::endl;)
+            planet = new Planet(std::string("res/") + name + ".png", width, mass);
+            planet->SetPosition(posX, posY);
+            g_planets.push_back(planet);
+            break;
+         case 'C':
+            // Add cherry
+            iss >> posX;
+            iss >> posY;
+            INHIBIT(std::cout << "Adding cherry " << posX << " " << posY << std::endl;)
+            cherry = new Sprite("res/cherry.png", 16, 16);
+            cherry->SetPosition(posX, posY);
+            cherry->StartAnim(0, 6, 8);
+            g_cherries.push_back(cherry);
+            break;
+         default:
+            std::cerr << "Levels::load: invalid format for file '" << LEVELS_FILE << "'"<< std::endl;
+            return false;
+      }
+   }
 
    return true;
 }
