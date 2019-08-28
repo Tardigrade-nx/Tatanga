@@ -8,6 +8,7 @@
 #include "sdlutils.h"
 #include "planet.h"
 #include "tatanga.h"
+#include "levels.h"
 
 //------------------------------------------------------------------------------
 
@@ -31,7 +32,7 @@ int main(int argc, char* args[])
 
    // Create planets
    Planet *planet = new Planet("res/earth.png", 200, 30.0);
-   planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius, (SCREEN_HEIGHT / 2) - planet->m_radius);
+   planet->SetPosition(540, 260);
    g_planets.push_back(planet);
    //~ Planet *planet = new Planet("res/earth.png", 200, 30.0);
    //~ planet->SetPosition((SCREEN_WIDTH / 2) - planet->m_radius - 400, (SCREEN_HEIGHT / 2) - planet->m_radius + 150);
@@ -49,7 +50,7 @@ int main(int argc, char* args[])
    // Create cherries
    Sprite *cherry;
    cherry = new Sprite("res/cherry.png", 16, 16);
-   cherry->SetPosition(632, 100);
+   cherry->SetPosition(632, 112);
    cherry->StartAnim(0, 6, 8);
    g_cherries.push_back(cherry);
    cherry = new Sprite("res/cherry.png", 16, 16);
@@ -109,10 +110,7 @@ int main(int argc, char* args[])
 
    // Clean up and quit
    delete tatanga;
-   for (planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
-      delete *planetIt;
-   for (spriteIt = g_cherries.begin(); spriteIt != g_cherries.end(); ++spriteIt)
-      delete *spriteIt;
+   Levels::unload();
    SDLUtils::Close();
    return 0;
 }
