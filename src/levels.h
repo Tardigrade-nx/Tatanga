@@ -5,13 +5,16 @@ namespace Levels
 {
 
    // Load a level from the level file
-   bool load(int p_levelNumber);
+   bool Load(int p_levelNumber);
 
    // Unload current level
-   void unload();
+   void Unload();
 
    // Get number of levels in the level file
-   int number();
+   int Number();
+
+   // Print current level
+   void Print();
 
 }
 

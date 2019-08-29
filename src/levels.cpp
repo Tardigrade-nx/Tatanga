@@ -13,15 +13,15 @@
 //------------------------------------------------------------------------------
 
 // Load a level from the level file
-bool Levels::load(int p_levelNumber)
+bool Levels::Load(int p_levelNumber)
 {
-   INHIBIT(std::cout << "Levels::load(" << p_levelNumber << ")" << std::endl;)
+   INHIBIT(std::cout << "Levels::Load(" << p_levelNumber << ")" << std::endl;)
 
    // Unload existing level
-   unload();
+   Unload();
    if (p_levelNumber < 1)
    {
-      std::cerr << "Levels::load: invalid level number: '" << p_levelNumber << "'"<< std::endl;
+      std::cerr << "Levels::Load: invalid level number: '" << p_levelNumber << "'"<< std::endl;
       return false;
    }
 
@@ -29,7 +29,7 @@ bool Levels::load(int p_levelNumber)
    std::ifstream ifs(LEVELS_FILE);
    if (! ifs.is_open())
    {
-      std::cerr << "Levels::load: unable to read file '" << LEVELS_FILE << "'"<< std::endl;
+      std::cerr << "Levels::Load: unable to read file '" << LEVELS_FILE << "'"<< std::endl;
       return false;
    }
    std::string line("");
@@ -43,7 +43,7 @@ bool Levels::load(int p_levelNumber)
    }
    if (levelNumber != p_levelNumber)
    {
-      std::cerr << "Levels::load: level '" << p_levelNumber << "' not found in file '" << LEVELS_FILE << "'"<< std::endl;
+      std::cerr << "Levels::Load: level '" << p_levelNumber << "' not found in file '" << LEVELS_FILE << "'"<< std::endl;
       return false;
    }
 
@@ -86,7 +86,7 @@ bool Levels::load(int p_levelNumber)
             g_cherries.push_back(cherry);
             break;
          default:
-            std::cerr << "Levels::load: invalid format for file '" << LEVELS_FILE << "'"<< std::endl;
+            std::cerr << "Levels::Load: invalid format for file '" << LEVELS_FILE << "'"<< std::endl;
             return false;
       }
    }
@@ -97,7 +97,7 @@ bool Levels::load(int p_levelNumber)
 //------------------------------------------------------------------------------
 
 // Unload current level
-void Levels::unload()
+void Levels::Unload()
 {
    // Delete planets
    for (std::list<Planet*>::iterator planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
@@ -112,7 +112,25 @@ void Levels::unload()
 //------------------------------------------------------------------------------
 
 // Get number of levels in the level file
-int Levels::number()
+int Levels::Number()
 {
+   // TODO
    return 0;
+}
+
+//------------------------------------------------------------------------------
+
+// Print current level
+void Levels::Print()
+{
+   for (std::list<Planet*>::iterator planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
+   {
+      std::cout << "P " << (*planetIt)->m_name << " " << (*planetIt)->m_width << " "
+                << (*planetIt)->m_mass << " " << (*planetIt)->m_x << " " << (*planetIt)->m_y << " ";
+   }
+   for (std::list<Sprite*>::iterator spriteIt = g_cherries.begin(); spriteIt != g_cherries.end(); ++spriteIt)
+   {
+      std::cout << "C " << (*spriteIt)->m_x << " " << (*spriteIt)->m_y << " ";
+   }
+   std::cout << std::endl;
 }

@@ -82,7 +82,6 @@ void Sprite::Render()
 // Set x and y coordinates
 void Sprite::SetPosition(const double &p_x, const double &p_y)
 {
-   INHIBIT(std::cout << "Sprite::SetPosition(" << p_x << ", " << p_y << ")" << std::endl;)
    m_x = p_x;
    m_y = p_y;
    m_centerX = m_x + m_width / 2.0;

@@ -21,6 +21,26 @@ std::list<Sprite*> g_cherries;
 
 //------------------------------------------------------------------------------
 
+// Select a sprite with the mouse, for level editor
+INHIBIT(
+Sprite *getClickedSprite(int p_x, int p_y)
+{
+   for (std::list<Sprite*>::iterator spriteIt = g_cherries.begin(); spriteIt != g_cherries.end(); ++spriteIt)
+   {
+      if (p_x >= (*spriteIt)->m_x && p_x <= (*spriteIt)->m_x + (*spriteIt)->m_width && p_y >= (*spriteIt)->m_y && p_y <= (*spriteIt)->m_y + (*spriteIt)->m_height)
+         return *spriteIt;
+   }
+   for (std::list<Planet*>::iterator planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
+   {
+      if (p_x >= (*planetIt)->m_x && p_x <= (*planetIt)->m_x + (*planetIt)->m_width && p_y >= (*planetIt)->m_y && p_y <= (*planetIt)->m_y + (*planetIt)->m_height)
+         return *planetIt;
+   }
+   return NULL;
+}
+)
+
+//------------------------------------------------------------------------------
+
 int main(int argc, char* args[])
 {
    // Init SDL
@@ -30,8 +50,10 @@ int main(int argc, char* args[])
       return 1;
    }
 
+   INHIBIT(Sprite *mouseSelectedSprite = NULL;)
+
    // Load first level
-   Levels::load(2);
+   Levels::Load(2);
 
    // Create Tatanga
    Tatanga *tatanga = new Tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
@@ -52,11 +74,36 @@ int main(int argc, char* args[])
             loop = false;
          }
          INHIBIT(
-         // Level editor
+         // Level editor, only active in debug mode
          else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
          {
-            Planet *planet = *g_planets.begin();
-            planet->SetPosition(e.button.x - planet->m_radius, e.button.y - planet->m_radius);
+            // Click on a sprite
+            mouseSelectedSprite = getClickedSprite(e.button.x, e.button.y);
+            if (mouseSelectedSprite != NULL)
+               mouseSelectedSprite->SetPosition(e.button.x - mouseSelectedSprite->m_width / 2, e.button.y - mouseSelectedSprite->m_height / 2);
+         }
+         else if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT)
+         {
+            // Release the selected sprite
+            mouseSelectedSprite = NULL;
+         }
+         else if (e.type == SDL_MOUSEMOTION && mouseSelectedSprite != NULL)
+         {
+            // Move the selected sprite
+            mouseSelectedSprite->SetPosition(e.button.x - mouseSelectedSprite->m_width / 2, e.button.y - mouseSelectedSprite->m_height / 2);
+         }
+         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_p)
+         {
+            // Print current level line
+            Levels::Print();
+         }
+         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_c)
+         {
+            // Add a cherry
+            Sprite *cherry = new Sprite("res/cherry.png", 16, 16);
+            cherry->SetPosition(SCREEN_WIDTH / 2 - 8, SCREEN_HEIGHT / 2 - 8);
+            cherry->StartAnim(0, 6, 8);
+            g_cherries.push_back(cherry);
          }
          )
          else
@@ -92,7 +139,7 @@ int main(int argc, char* args[])
 
    // Clean up and quit
    delete tatanga;
-   Levels::unload();
+   Levels::Unload();
    SDLUtils::Close();
    return 0;
 }

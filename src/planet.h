@@ -3,8 +3,9 @@
 
 #include <string>
 #include <SDL2/SDL.h>
+#include "sprite.h"
 
-class Planet
+class Planet: public Sprite
 {
 
 //------------------------------------------------------------------------------
@@ -18,29 +19,19 @@ class Planet
    virtual ~Planet();
 
    // Update planet state at each frame
-   void Update();
+   virtual void Update();
 
    // Render planet
-   void Render();
-
-   // Set x and y coordinates
-   void SetPosition(const double &p_x, const double &p_y);
+   virtual void Render();
 
 //------------------------------------------------------------------------------
 
    public:
 
-   // Texture containing the planet image
-   SDL_Texture *m_texture;
-
-   // Coordinates of the planet
-   double m_x;
-   double m_y;
-   double m_centerX;
-   double m_centerY;
+   // Name of the planet
+   std::string m_name;
 
    // Diameter and radius of the planet
-   int m_diameter;
    double m_radius;
 
    // Mass of the planet
