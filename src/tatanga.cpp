@@ -37,6 +37,25 @@ Tatanga::Tatanga(const std::string &p_textureFile, int p_width, int p_height, Pl
 
 //------------------------------------------------------------------------------
 
+// Reset Tatanga on a new planet
+void Tatanga::Reset(Planet *p_planet)
+{
+   m_state = TatangaState_Idle;
+   m_accelRun = 0.0;
+   m_speedRun = 0.0;
+   m_accelX = 0.0;
+   m_accelY = 0.0;
+   m_speedX = 0.0;
+   m_speedY = 0.0;
+   m_rotationSpeed = 0.0;
+   m_angle = -M_PI_2;
+   m_flip = SDL_FLIP_NONE;
+   m_planet = p_planet;
+   START_ANIM_IDLE;
+}
+
+//------------------------------------------------------------------------------
+
 // Destructor
 Tatanga::~Tatanga()
 {

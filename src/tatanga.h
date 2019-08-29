@@ -35,6 +35,9 @@ class Tatanga: public Sprite
    // Update Tatanga state at each frame
    virtual void Update();
 
+   // Reset Tatanga on a new planet
+   void Reset(Planet *p_planet);
+
 //------------------------------------------------------------------------------
 
    public:

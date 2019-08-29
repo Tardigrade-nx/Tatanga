@@ -53,7 +53,8 @@ int main(int argc, char* args[])
    INHIBIT(Sprite *mouseSelectedSprite = NULL;)
 
    // Load first level
-   Levels::Load(2);
+   int levelNumber = 1;
+   Levels::Load(levelNumber);
 
    // Create Tatanga
    Tatanga *tatanga = new Tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
@@ -104,6 +105,19 @@ int main(int argc, char* args[])
             cherry->SetPosition(SCREEN_WIDTH / 2 - 8, SCREEN_HEIGHT / 2 - 8);
             cherry->StartAnim(0, 6, 8);
             g_cherries.push_back(cherry);
+         }
+         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_n)
+         {
+            // Next level
+            ++levelNumber;
+            Levels::Load(levelNumber);
+            tatanga->Reset(*g_planets.begin());
+         }
+         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_r)
+         {
+            // Restart level
+            Levels::Load(levelNumber);
+            tatanga->Reset(*g_planets.begin());
          }
          )
          else
