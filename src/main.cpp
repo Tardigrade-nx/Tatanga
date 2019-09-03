@@ -113,6 +113,13 @@ int main(int argc, char* args[])
             Levels::Load(levelNumber);
             tatanga->Reset(*g_planets.begin());
          }
+         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_b)
+         {
+            // Previous level
+            --levelNumber;
+            Levels::Load(levelNumber);
+            tatanga->Reset(*g_planets.begin());
+         }
          else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_r)
          {
             // Restart level
@@ -125,8 +132,15 @@ int main(int argc, char* args[])
             tatanga->Handle(e);
          }
       }
-      // Update
+      // Update Tatanga
       tatanga->Update();
+      if (tatanga->m_planet != NULL && !tatanga->m_planet->m_landing)
+      {
+         // Tatanga landed on a deadly planet => restart level
+         Levels::Load(levelNumber);
+         tatanga->Reset(*g_planets.begin());
+      }
+      // Update cherries
       for (spriteIt = g_cherries.begin(); spriteIt != g_cherries.end();)
       {
          (*spriteIt)->Update();

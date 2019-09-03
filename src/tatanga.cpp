@@ -164,7 +164,7 @@ void Tatanga::Update()
 
          // Float in space until collision
          m_planet = MoveInSpace();
-         if (m_planet != NULL)
+         if (m_planet != NULL && m_planet->m_landing)
          {
             // Land on a planet
             INHIBIT(std::cout << "Collision detected!" << std::endl;)

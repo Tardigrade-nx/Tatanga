@@ -13,7 +13,7 @@ class Planet: public Sprite
    public:
 
    // Constructor
-   Planet(const std::string &p_textureFile, int p_width, double p_mass);
+   Planet(const std::string &p_textureFile, int p_width, const double &p_mass, bool p_landing, const double &p_radius);
 
    // Destructor
    virtual ~Planet();
@@ -31,11 +31,14 @@ class Planet: public Sprite
    // Name of the planet
    std::string m_name;
 
-   // Diameter and radius of the planet
+   // Radius of the planet, used for collision detection
    double m_radius;
 
    // Mass of the planet
    double m_mass;
+
+   // Is it allowed to land on it, or not
+   bool m_landing;
 
 //------------------------------------------------------------------------------
 

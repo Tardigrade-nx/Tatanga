@@ -6,11 +6,12 @@
 //------------------------------------------------------------------------------
 
 // Constructor
-Planet::Planet(const std::string &p_textureFile, int p_width, double p_mass):
+Planet::Planet(const std::string &p_textureFile, int p_width, const double &p_mass, bool p_landing, const double &p_radius):
    Sprite::Sprite(p_textureFile, p_width, p_width),
    m_name(""),
-   m_radius(p_width / 2.0),
-   m_mass(p_mass)
+   m_radius(p_radius),
+   m_mass(p_mass),
+   m_landing(p_landing)
 {
    // Name of the planet = texture file name, minus path and extension
    size_t pos = p_textureFile.rfind('/');

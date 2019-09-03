@@ -71,7 +71,7 @@ bool Levels::Load(int p_levelNumber)
             iss >> posX;
             iss >> posY;
             INHIBIT(std::cout << "Adding planet '" << name << "' " << width << " " << mass << " " << posX << " " << posY << std::endl;)
-            planet = new Planet(std::string("res/") + name + ".png", width, mass);
+            planet = new Planet(std::string("res/") + name + ".png", width, mass, true, width / 2.0);
             planet->SetPosition(posX, posY);
             g_planets.push_back(planet);
             break;
@@ -84,6 +84,17 @@ bool Levels::Load(int p_levelNumber)
             cherry->SetPosition(posX, posY);
             cherry->StartAnim(0, 6, 8);
             g_cherries.push_back(cherry);
+            break;
+         case 'B':
+            // Add black hole
+            iss >> width;
+            iss >> mass;
+            iss >> posX;
+            iss >> posY;
+            INHIBIT(std::cout << "Adding black hole " << width << " " << mass << " " << posX << " " << posY << std::endl;)
+            planet = new Planet("res/blackhole.png", width, mass, false, 22.0);
+            planet->SetPosition(posX, posY);
+            g_planets.push_back(planet);
             break;
          default:
             std::cerr << "Levels::Load: invalid format for file '" << LEVELS_FILE << "'"<< std::endl;
@@ -125,8 +136,12 @@ void Levels::Print()
 {
    for (std::list<Planet*>::iterator planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
    {
-      std::cout << "P " << (*planetIt)->m_name << " " << (*planetIt)->m_width << " "
-                << (*planetIt)->m_mass << " " << (*planetIt)->m_x << " " << (*planetIt)->m_y << " ";
+      if ((*planetIt)->m_name == "blackhole")
+         std::cout << "B " << (*planetIt)->m_width << " "
+                   << (*planetIt)->m_mass << " " << (*planetIt)->m_x << " " << (*planetIt)->m_y << " ";
+      else
+         std::cout << "P " << (*planetIt)->m_name << " " << (*planetIt)->m_width << " "
+                   << (*planetIt)->m_mass << " " << (*planetIt)->m_x << " " << (*planetIt)->m_y << " ";
    }
    for (std::list<Sprite*>::iterator spriteIt = g_cherries.begin(); spriteIt != g_cherries.end(); ++spriteIt)
    {
