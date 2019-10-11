@@ -13,7 +13,7 @@ class Planet: public Sprite
    public:
 
    // Constructor
-   Planet(const std::string &p_textureFile, int p_width, const double &p_mass, bool p_landing, const double &p_radius);
+   Planet(const std::string &p_textureFile, int p_width, const double &p_mass, bool p_landing, const double &p_radius, const double &p_rotation);
 
    // Destructor
    virtual ~Planet();
@@ -39,6 +39,9 @@ class Planet: public Sprite
 
    // Is it allowed to land on it, or not
    bool m_landing;
+
+   // Angle of rotation
+   double m_rotation;
 
 //------------------------------------------------------------------------------
 

@@ -71,7 +71,7 @@ bool Levels::Load(int p_levelNumber)
             iss >> posX;
             iss >> posY;
             INHIBIT(std::cout << "Adding planet '" << name << "' " << width << " " << mass << " " << posX << " " << posY << std::endl;)
-            planet = new Planet(std::string("res/") + name + ".png", width, mass, true, width / 2.0);
+            planet = new Planet(std::string("res/") + name + ".png", width, mass, true, width / 2.0, 0.0);
             planet->SetPosition(posX, posY);
             g_planets.push_back(planet);
             break;
@@ -92,7 +92,7 @@ bool Levels::Load(int p_levelNumber)
             iss >> posX;
             iss >> posY;
             INHIBIT(std::cout << "Adding black hole " << width << " " << mass << " " << posX << " " << posY << std::endl;)
-            planet = new Planet("res/blackhole.png", width, mass, false, 22.0);
+            planet = new Planet("res/blackhole.png", width, mass, false, 22.0, -0.005);
             planet->SetPosition(posX, posY);
             g_planets.push_back(planet);
             break;
@@ -125,8 +125,25 @@ void Levels::Unload()
 // Get number of levels in the level file
 int Levels::Number()
 {
-   // TODO
-   return 0;
+   int nb = 0;
+   // Read level file
+   std::ifstream ifs(LEVELS_FILE);
+   if (! ifs.is_open())
+   {
+      std::cerr << "Levels::Number: unable to read file '" << LEVELS_FILE << "'"<< std::endl;
+      return false;
+   }
+   // Count number of lines in file
+   std::string line("");
+   while (! ifs.eof())
+   {
+      std::getline(ifs, line);
+      if (line.empty() || line.at(0) == '#')
+         continue;
+      ++nb;
+   }
+   INHIBIT(std::cout << "Levels::Number() = " << nb << std::endl;)
+   return nb;
 }
 
 //------------------------------------------------------------------------------

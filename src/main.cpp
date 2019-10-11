@@ -21,7 +21,7 @@ std::list<Sprite*> g_cherries;
 
 //------------------------------------------------------------------------------
 
-// Select a sprite with the mouse, for level editor
+// Select a sprite with the mouse, for level editor in debug mode
 INHIBIT(
 Sprite *getClickedSprite(int p_x, int p_y)
 {
@@ -53,6 +53,7 @@ int main(int argc, char* args[])
    INHIBIT(Sprite *mouseSelectedSprite = NULL;)
 
    // Load first level
+   int nbLevels = Levels::Number();
    int levelNumber = 1;
    Levels::Load(levelNumber);
 
@@ -110,6 +111,8 @@ int main(int argc, char* args[])
          {
             // Next level
             ++levelNumber;
+            if (levelNumber > nbLevels)
+               levelNumber = 1;
             Levels::Load(levelNumber);
             tatanga->Reset(*g_planets.begin());
          }
@@ -139,7 +142,11 @@ int main(int argc, char* args[])
          // Tatanga landed on a deadly planet => restart level
          Levels::Load(levelNumber);
          tatanga->Reset(*g_planets.begin());
+         continue;
       }
+      // Update planets
+      for (planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)
+         (*planetIt)->Update();
       // Update cherries
       for (spriteIt = g_cherries.begin(); spriteIt != g_cherries.end();)
       {
