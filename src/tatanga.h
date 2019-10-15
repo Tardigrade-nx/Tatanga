@@ -30,7 +30,7 @@ class Tatanga: public Sprite
    virtual ~Tatanga();
 
    // Handle events
-   virtual void Handle(const SDL_Event &p_event);
+   virtual void Handle(const SDL_Event &event);
 
    // Update Tatanga state at each frame
    virtual void Update();

@@ -15,6 +15,7 @@
 // Globals
 SDL_Window* g_window = NULL;
 SDL_Renderer* g_renderer = NULL;
+SDL_Joystick* g_joystick = NULL;
 std::map<std::string, SDL_Texture*> g_textures;
 std::list<Planet*> g_planets;
 std::list<Sprite*> g_cherries;
@@ -53,61 +54,61 @@ int main(int argc, char* args[])
    INHIBIT(Sprite *mouseSelectedSprite = NULL;)
 
    // Load first level
-   int nbLevels = Levels::Number();
+   INHIBIT(int nbLevels = Levels::Number();)
    int levelNumber = 1;
    Levels::Load(levelNumber);
 
    // Create Tatanga
-   Tatanga *tatanga = new Tatanga("res/tatanga.png", 64, 64, *g_planets.begin());
+   Tatanga *tatanga = new Tatanga(std::string(PATH_PREFIX) + "tatanga.png", 64, 64, *g_planets.begin());
 
    // Main loop
-   SDL_Event e;
+   SDL_Event event;
    bool loop = true;
    std::list<Planet*>::iterator planetIt;
    std::list<Sprite*>::iterator spriteIt;
    while (loop)
    {
       // Handle events
-      while (SDL_PollEvent(&e) != 0 )
+      while (SDL_PollEvent(&event) != 0 )
       {
          // Quit
-         if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_ESCAPE))
+         if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_ESCAPE))
          {
             loop = false;
          }
          INHIBIT(
          // Level editor, only active in debug mode
-         else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
+         else if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
          {
             // Click on a sprite
-            mouseSelectedSprite = getClickedSprite(e.button.x, e.button.y);
+            mouseSelectedSprite = getClickedSprite(event.button.x, event.button.y);
             if (mouseSelectedSprite != NULL)
-               mouseSelectedSprite->SetPosition(e.button.x - mouseSelectedSprite->m_width / 2, e.button.y - mouseSelectedSprite->m_height / 2);
+               mouseSelectedSprite->SetPosition(event.button.x - mouseSelectedSprite->m_width / 2, event.button.y - mouseSelectedSprite->m_height / 2);
          }
-         else if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT)
+         else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT)
          {
             // Release the selected sprite
             mouseSelectedSprite = NULL;
          }
-         else if (e.type == SDL_MOUSEMOTION && mouseSelectedSprite != NULL)
+         else if (event.type == SDL_MOUSEMOTION && mouseSelectedSprite != NULL)
          {
             // Move the selected sprite
-            mouseSelectedSprite->SetPosition(e.button.x - mouseSelectedSprite->m_width / 2, e.button.y - mouseSelectedSprite->m_height / 2);
+            mouseSelectedSprite->SetPosition(event.button.x - mouseSelectedSprite->m_width / 2, event.button.y - mouseSelectedSprite->m_height / 2);
          }
-         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_p)
+         else if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_p)
          {
             // Print current level line
             Levels::Print();
          }
-         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_c)
+         else if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_c)
          {
             // Add a cherry
-            Sprite *cherry = new Sprite("res/cherry.png", 16, 16);
+            Sprite *cherry = new Sprite(std::string(PATH_PREFIX) + "cherry.png", 16, 16);
             cherry->SetPosition(SCREEN_WIDTH / 2 - 8, SCREEN_HEIGHT / 2 - 8);
             cherry->StartAnim(0, 6, 8);
             g_cherries.push_back(cherry);
          }
-         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_n)
+         else if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_n)
          {
             // Next level
             ++levelNumber;
@@ -116,14 +117,14 @@ int main(int argc, char* args[])
             Levels::Load(levelNumber);
             tatanga->Reset(*g_planets.begin());
          }
-         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_b)
+         else if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_b)
          {
             // Previous level
             --levelNumber;
             Levels::Load(levelNumber);
             tatanga->Reset(*g_planets.begin());
          }
-         else if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_r)
+         else if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_r)
          {
             // Restart level
             Levels::Load(levelNumber);
@@ -132,7 +133,7 @@ int main(int argc, char* args[])
          )
          else
          {
-            tatanga->Handle(e);
+            tatanga->Handle(event);
          }
       }
       // Update Tatanga

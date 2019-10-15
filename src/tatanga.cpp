@@ -64,13 +64,13 @@ Tatanga::~Tatanga()
 //------------------------------------------------------------------------------
 
 // Handle events
-void Tatanga::Handle(const SDL_Event &p_event)
+void Tatanga::Handle(const SDL_Event &event)
 {
    switch (m_state)
    {
       case TatangaState_Idle:
       case TatangaState_Run:
-         if (p_event.type == SDL_KEYDOWN && p_event.key.repeat == 0 && p_event.key.keysym.sym == SDLK_w)
+         if (BUTTON_PRESSED_JUMP)
          {
             START_ANIM_STRIKE;
             m_state = TatangaState_Strike;
@@ -214,13 +214,13 @@ void Tatanga::MoveOnGround()
    // -------------------
    // Update acceleration
    // -------------------
-   if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && !SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT])
+   if (BUTTON_HELD_RIGHT && ! BUTTON_HELD_LEFT)
    {
       m_accelRun = RUN_ACCELERATION;
       if (m_flip != SDL_FLIP_NONE)
          m_flip = SDL_FLIP_NONE;
    }
-   else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && !SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT])
+   else if (BUTTON_HELD_LEFT && ! BUTTON_HELD_RIGHT)
    {
       m_accelRun = -RUN_ACCELERATION;
       if (m_flip != SDL_FLIP_HORIZONTAL)

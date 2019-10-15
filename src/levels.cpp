@@ -8,7 +8,7 @@
 #include "planet.h"
 #include "sprite.h"
 
-#define LEVELS_FILE "levels.dat"
+#define LEVELS_FILE std::string(PATH_PREFIX) + "levels.dat"
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ bool Levels::Load(int p_levelNumber)
             iss >> posX;
             iss >> posY;
             INHIBIT(std::cout << "Adding planet '" << name << "' " << width << " " << mass << " " << posX << " " << posY << std::endl;)
-            planet = new Planet(std::string("res/") + name + ".png", width, mass, true, width / 2.0, 0.0);
+            planet = new Planet(std::string(PATH_PREFIX) + name + ".png", width, mass, true, width / 2.0, 0.0);
             planet->SetPosition(posX, posY);
             g_planets.push_back(planet);
             break;
@@ -80,7 +80,7 @@ bool Levels::Load(int p_levelNumber)
             iss >> posX;
             iss >> posY;
             INHIBIT(std::cout << "Adding cherry " << posX << " " << posY << std::endl;)
-            cherry = new Sprite("res/cherry.png", 16, 16);
+            cherry = new Sprite(std::string(PATH_PREFIX) + "cherry.png", 16, 16);
             cherry->SetPosition(posX, posY);
             cherry->StartAnim(0, 6, 8);
             g_cherries.push_back(cherry);
@@ -92,7 +92,7 @@ bool Levels::Load(int p_levelNumber)
             iss >> posX;
             iss >> posY;
             INHIBIT(std::cout << "Adding black hole " << width << " " << mass << " " << posX << " " << posY << std::endl;)
-            planet = new Planet("res/blackhole.png", width, mass, false, 22.0, -0.005);
+            planet = new Planet(std::string(PATH_PREFIX) + "blackhole.png", width, mass, false, 22.0, -0.005);
             planet->SetPosition(posX, posY);
             g_planets.push_back(planet);
             break;

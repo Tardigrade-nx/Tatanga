@@ -2,6 +2,9 @@
 #include <SDL2/SDL_image.h>
 #include "sdlutils.h"
 #include "def.h"
+#ifdef __SWITCH__
+#include "switch.h"
+#endif
 
 //------------------------------------------------------------------------------
 
@@ -9,12 +12,19 @@
 bool SDLUtils::Init()
 {
    INHIBIT(std::cout << "SDLUtils::Init()" << std::endl;)
+
+   // Initialize romfs
+   #ifdef __SWITCH__
+   romfsInit();
+   #endif
+
    // Initialize SDL
    if (SDL_Init(SDL_INIT_VIDEO) < 0)
    {
       std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
       return false;
    }
+
    // Intialize SDL_image
    int flags = IMG_INIT_PNG;
    if ((IMG_Init(flags) & flags) != flags)
@@ -22,13 +32,32 @@ bool SDLUtils::Init()
       std::cerr << "SDL_image could not initialize! IMG_GetError: " << IMG_GetError() << std::endl;
       return false;
    }
+
+   // Initialize joystick
+   INHIBIT(std::cout << "SDL_NumJoysticks: '" << SDL_NumJoysticks() << "'" << std::endl;)
+   if (SDL_NumJoysticks() >= 1)
+   {
+      g_joystick = SDL_JoystickOpen(0);
+      if (g_joystick == NULL)
+      {
+         std::cerr << "Unable to open joystick." << std::endl;
+         return false;
+      }
+      INHIBIT(std::cout << "SDL_JoystickOpen OK" << std::endl;)
+   }
+
    // Create window
+   #ifdef __SWITCH__
+   g_window = SDL_CreateWindow(APP_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN);
+   #else
    g_window = SDL_CreateWindow(APP_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+   #endif
    if (g_window == NULL)
    {
       std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
       return false;
    }
+
    // Create renderer
    g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
    if (g_renderer == NULL)
@@ -36,6 +65,7 @@ bool SDLUtils::Init()
       std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
       return false;
    }
+
    // Set draw color
    SDL_SetRenderDrawColor(g_renderer, 0xA0, 0xA0, 0xA0, 0xFF);
    return true;
@@ -62,10 +92,20 @@ void SDLUtils::Close()
       SDL_DestroyWindow(g_window);
       g_window = NULL;
    }
+   // Joystick
+   if (g_joystick != NULL)
+   {
+      SDL_JoystickClose(g_joystick);
+      g_joystick = NULL;
+   }
    // SDL_image
    IMG_Quit();
    // SDL
    SDL_Quit();
+   // romfs
+   #ifdef __SWITCH__
+   romfsExit();
+   #endif
 }
 
 //------------------------------------------------------------------------------
