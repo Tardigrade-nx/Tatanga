@@ -54,7 +54,7 @@ int main(int argc, char* args[])
    INHIBIT(Sprite *mouseSelectedSprite = NULL;)
 
    // Load first level
-   INHIBIT(int nbLevels = Levels::Number();)
+   int nbLevels = Levels::Number();
    int levelNumber = 1;
    Levels::Load(levelNumber);
 
@@ -72,9 +72,18 @@ int main(int argc, char* args[])
       while (SDL_PollEvent(&event) != 0 )
       {
          // Quit
-         if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_ESCAPE))
+         if (event.type == SDL_QUIT || (BUTTON_PRESSED_QUIT))
          {
             loop = false;
+         }
+         // Next level
+         else if (BUTTON_PRESSED_NEXT)
+         {
+            ++levelNumber;
+            if (levelNumber > nbLevels)
+               levelNumber = 1;
+            Levels::Load(levelNumber);
+            tatanga->Reset(*g_planets.begin());
          }
          INHIBIT(
          // Level editor, only active in debug mode
@@ -108,15 +117,6 @@ int main(int argc, char* args[])
             cherry->StartAnim(0, 6, 8);
             g_cherries.push_back(cherry);
          }
-         else if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_n)
-         {
-            // Next level
-            ++levelNumber;
-            if (levelNumber > nbLevels)
-               levelNumber = 1;
-            Levels::Load(levelNumber);
-            tatanga->Reset(*g_planets.begin());
-         }
          else if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_b)
          {
             // Previous level
@@ -138,12 +138,25 @@ int main(int argc, char* args[])
       }
       // Update Tatanga
       tatanga->Update();
-      if (tatanga->m_planet != NULL && !tatanga->m_planet->m_landing)
+      if (tatanga->m_planet != NULL)
       {
-         // Tatanga landed on a deadly planet => restart level
-         Levels::Load(levelNumber);
-         tatanga->Reset(*g_planets.begin());
-         continue;
+         // If Tatanga landed on a deadly planet => restart level
+         if (!tatanga->m_planet->m_landing)
+         {
+            Levels::Load(levelNumber);
+            tatanga->Reset(*g_planets.begin());
+            continue;
+         }
+         // If all cherries are picked => next level
+         if (g_cherries.empty())
+         {
+            ++levelNumber;
+            if (levelNumber > nbLevels)
+               levelNumber = 1;
+            Levels::Load(levelNumber);
+            tatanga->Reset(*g_planets.begin());
+            continue;
+         }
       }
       // Update planets
       for (planetIt = g_planets.begin(); planetIt != g_planets.end(); ++planetIt)

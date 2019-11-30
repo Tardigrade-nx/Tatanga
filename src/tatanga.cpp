@@ -214,13 +214,13 @@ void Tatanga::MoveOnGround()
    // -------------------
    // Update acceleration
    // -------------------
-   if (BUTTON_HELD_RIGHT && ! BUTTON_HELD_LEFT)
+   if ((BUTTON_HELD_RIGHT) && ! (BUTTON_HELD_LEFT))
    {
       m_accelRun = RUN_ACCELERATION;
       if (m_flip != SDL_FLIP_NONE)
          m_flip = SDL_FLIP_NONE;
    }
-   else if (BUTTON_HELD_LEFT && ! BUTTON_HELD_RIGHT)
+   else if ((BUTTON_HELD_LEFT) && ! (BUTTON_HELD_RIGHT))
    {
       m_accelRun = -RUN_ACCELERATION;
       if (m_flip != SDL_FLIP_HORIZONTAL)
