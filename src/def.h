@@ -6,8 +6,8 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-#define INHIBIT(X) X
-//~ #define INHIBIT(X) /* X */
+//~ #define INHIBIT(X) X
+#define INHIBIT(X) /* X */
 
 #define APP_NAME "Tatanga"
 #define SCREEN_WIDTH 1280
